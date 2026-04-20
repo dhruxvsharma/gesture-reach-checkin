@@ -42,7 +42,12 @@ export const kioskStore = {
 
 export function useKiosk() {
   const [, force] = React.useState(0);
-  React.useEffect(() => kioskStore.subscribe(() => force((n) => n + 1)), []);
+  React.useEffect(() => {
+    const unsub = kioskStore.subscribe(() => force((n) => n + 1));
+    return () => {
+      unsub;
+    };
+  }, []);
   return state;
 }
 
