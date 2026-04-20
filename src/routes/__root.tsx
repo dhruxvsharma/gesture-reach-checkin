@@ -37,6 +37,10 @@ export const Route = createRootRoute({
       { property: "og:description", content: "Contactless gesture-based hospital kiosk." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "SmartCare — Touchless Patient Check-In" },
+      { name: "twitter:description", content: "Contactless gesture-based hospital kiosk." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b2a0d1e0-3d29-4ba7-a7e2-e0208ff070f6/id-preview-dc1291ed--16026f29-a805-4423-bae3-1a89344f2911.lovable.app-1776696945758.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b2a0d1e0-3d29-4ba7-a7e2-e0208ff070f6/id-preview-dc1291ed--16026f29-a805-4423-bae3-1a89344f2911.lovable.app-1776696945758.png" },
     ],
     links: [
       {
