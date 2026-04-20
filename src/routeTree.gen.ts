@@ -9,8 +9,74 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VerifyRouteImport } from './routes/verify'
+import { Route as SymptomsRouteImport } from './routes/symptoms'
+import { Route as ScreeningRouteImport } from './routes/screening'
+import { Route as SanitizeRouteImport } from './routes/sanitize'
+import { Route as ReceiptRouteImport } from './routes/receipt'
+import { Route as PaymentRouteImport } from './routes/payment'
+import { Route as LanguageRouteImport } from './routes/language'
+import { Route as InsuranceRouteImport } from './routes/insurance'
+import { Route as IdentifyRouteImport } from './routes/identify'
+import { Route as FeedbackRouteImport } from './routes/feedback'
+import { Route as CompleteRouteImport } from './routes/complete'
 import { Route as IndexRouteImport } from './routes/index'
 
+const VerifyRoute = VerifyRouteImport.update({
+  id: '/verify',
+  path: '/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SymptomsRoute = SymptomsRouteImport.update({
+  id: '/symptoms',
+  path: '/symptoms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScreeningRoute = ScreeningRouteImport.update({
+  id: '/screening',
+  path: '/screening',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SanitizeRoute = SanitizeRouteImport.update({
+  id: '/sanitize',
+  path: '/sanitize',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReceiptRoute = ReceiptRouteImport.update({
+  id: '/receipt',
+  path: '/receipt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentRoute = PaymentRouteImport.update({
+  id: '/payment',
+  path: '/payment',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LanguageRoute = LanguageRouteImport.update({
+  id: '/language',
+  path: '/language',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InsuranceRoute = InsuranceRouteImport.update({
+  id: '/insurance',
+  path: '/insurance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IdentifyRoute = IdentifyRouteImport.update({
+  id: '/identify',
+  path: '/identify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeedbackRoute = FeedbackRouteImport.update({
+  id: '/feedback',
+  path: '/feedback',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompleteRoute = CompleteRouteImport.update({
+  id: '/complete',
+  path: '/complete',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +85,186 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/complete': typeof CompleteRoute
+  '/feedback': typeof FeedbackRoute
+  '/identify': typeof IdentifyRoute
+  '/insurance': typeof InsuranceRoute
+  '/language': typeof LanguageRoute
+  '/payment': typeof PaymentRoute
+  '/receipt': typeof ReceiptRoute
+  '/sanitize': typeof SanitizeRoute
+  '/screening': typeof ScreeningRoute
+  '/symptoms': typeof SymptomsRoute
+  '/verify': typeof VerifyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/complete': typeof CompleteRoute
+  '/feedback': typeof FeedbackRoute
+  '/identify': typeof IdentifyRoute
+  '/insurance': typeof InsuranceRoute
+  '/language': typeof LanguageRoute
+  '/payment': typeof PaymentRoute
+  '/receipt': typeof ReceiptRoute
+  '/sanitize': typeof SanitizeRoute
+  '/screening': typeof ScreeningRoute
+  '/symptoms': typeof SymptomsRoute
+  '/verify': typeof VerifyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/complete': typeof CompleteRoute
+  '/feedback': typeof FeedbackRoute
+  '/identify': typeof IdentifyRoute
+  '/insurance': typeof InsuranceRoute
+  '/language': typeof LanguageRoute
+  '/payment': typeof PaymentRoute
+  '/receipt': typeof ReceiptRoute
+  '/sanitize': typeof SanitizeRoute
+  '/screening': typeof ScreeningRoute
+  '/symptoms': typeof SymptomsRoute
+  '/verify': typeof VerifyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/complete'
+    | '/feedback'
+    | '/identify'
+    | '/insurance'
+    | '/language'
+    | '/payment'
+    | '/receipt'
+    | '/sanitize'
+    | '/screening'
+    | '/symptoms'
+    | '/verify'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/complete'
+    | '/feedback'
+    | '/identify'
+    | '/insurance'
+    | '/language'
+    | '/payment'
+    | '/receipt'
+    | '/sanitize'
+    | '/screening'
+    | '/symptoms'
+    | '/verify'
+  id:
+    | '__root__'
+    | '/'
+    | '/complete'
+    | '/feedback'
+    | '/identify'
+    | '/insurance'
+    | '/language'
+    | '/payment'
+    | '/receipt'
+    | '/sanitize'
+    | '/screening'
+    | '/symptoms'
+    | '/verify'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CompleteRoute: typeof CompleteRoute
+  FeedbackRoute: typeof FeedbackRoute
+  IdentifyRoute: typeof IdentifyRoute
+  InsuranceRoute: typeof InsuranceRoute
+  LanguageRoute: typeof LanguageRoute
+  PaymentRoute: typeof PaymentRoute
+  ReceiptRoute: typeof ReceiptRoute
+  SanitizeRoute: typeof SanitizeRoute
+  ScreeningRoute: typeof ScreeningRoute
+  SymptomsRoute: typeof SymptomsRoute
+  VerifyRoute: typeof VerifyRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/verify': {
+      id: '/verify'
+      path: '/verify'
+      fullPath: '/verify'
+      preLoaderRoute: typeof VerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/symptoms': {
+      id: '/symptoms'
+      path: '/symptoms'
+      fullPath: '/symptoms'
+      preLoaderRoute: typeof SymptomsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/screening': {
+      id: '/screening'
+      path: '/screening'
+      fullPath: '/screening'
+      preLoaderRoute: typeof ScreeningRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sanitize': {
+      id: '/sanitize'
+      path: '/sanitize'
+      fullPath: '/sanitize'
+      preLoaderRoute: typeof SanitizeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/receipt': {
+      id: '/receipt'
+      path: '/receipt'
+      fullPath: '/receipt'
+      preLoaderRoute: typeof ReceiptRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment': {
+      id: '/payment'
+      path: '/payment'
+      fullPath: '/payment'
+      preLoaderRoute: typeof PaymentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/language': {
+      id: '/language'
+      path: '/language'
+      fullPath: '/language'
+      preLoaderRoute: typeof LanguageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/insurance': {
+      id: '/insurance'
+      path: '/insurance'
+      fullPath: '/insurance'
+      preLoaderRoute: typeof InsuranceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/identify': {
+      id: '/identify'
+      path: '/identify'
+      fullPath: '/identify'
+      preLoaderRoute: typeof IdentifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/feedback': {
+      id: '/feedback'
+      path: '/feedback'
+      fullPath: '/feedback'
+      preLoaderRoute: typeof FeedbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/complete': {
+      id: '/complete'
+      path: '/complete'
+      fullPath: '/complete'
+      preLoaderRoute: typeof CompleteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,16 +277,18 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CompleteRoute: CompleteRoute,
+  FeedbackRoute: FeedbackRoute,
+  IdentifyRoute: IdentifyRoute,
+  InsuranceRoute: InsuranceRoute,
+  LanguageRoute: LanguageRoute,
+  PaymentRoute: PaymentRoute,
+  ReceiptRoute: ReceiptRoute,
+  SanitizeRoute: SanitizeRoute,
+  ScreeningRoute: ScreeningRoute,
+  SymptomsRoute: SymptomsRoute,
+  VerifyRoute: VerifyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
