@@ -30,14 +30,13 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "SmartCare — Touchless Patient Check-In" },
+      { name: "description", content: "Contactless gesture-based hospital kiosk." },
+      { name: "author", content: "SmartCare" },
+      { property: "og:title", content: "SmartCare — Touchless Patient Check-In" },
+      { property: "og:description", content: "Contactless gesture-based hospital kiosk." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
