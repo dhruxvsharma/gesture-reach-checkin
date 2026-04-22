@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { DwellButton } from "@/components/kiosk/DwellButton";
 import { kioskStore } from "@/lib/kiosk-store";
 import * as React from "react";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/symptoms")({
   component: SymptomsPage,
@@ -27,8 +28,9 @@ function SymptomsPage() {
   };
 
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center px-12 py-24">
-      <h1 className="mb-3 text-5xl font-light tracking-tight">Which symptoms apply?</h1>
+    <div className="flex h-full w-full flex-col items-center justify-center px-12">
+      <div className="mb-2 text-xs font-semibold uppercase tracking-[0.25em] text-primary">Step 7 of 11</div>
+      <h1 className="font-serif mb-3 text-5xl font-light tracking-tight text-foreground">Which symptoms apply?</h1>
       <p className="mb-10 text-lg text-muted-foreground">Hover over all that you're experiencing</p>
 
       <div className="mb-10 grid w-full max-w-5xl grid-cols-4 gap-4">
@@ -38,17 +40,26 @@ function SymptomsPage() {
             <DwellButton
               key={s}
               onConfirm={() => toggle(s)}
-              dwellMs={900}
-              variant={isSel ? "success" : "default"}
-              className="py-6 text-base font-medium"
+              dwellMs={800}
+              className={cn(
+                "py-6 text-base font-medium",
+                isSel && "border-primary bg-accent text-primary",
+              )}
             >
-              {isSel && "✓ "}{s}
+              {isSel && (
+                <span className="mr-1 inline-block">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="inline -mt-0.5">
+                    <path d="M5 13l4 4L19 7" />
+                  </svg>
+                </span>
+              )}
+              {s}
             </DwellButton>
           );
         })}
       </div>
 
-      <DwellButton variant="success" onConfirm={finish} className="px-12 py-5 text-lg font-medium">
+      <DwellButton variant="primary" onConfirm={finish} className="px-12 py-5 text-lg font-medium">
         Continue ({selected.length} selected)
       </DwellButton>
     </div>

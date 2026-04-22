@@ -1,6 +1,7 @@
 import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCursor } from "@/hooks/use-cursor";
+import { useHandTracking } from "@/hooks/use-hand-tracking";
 import { cn } from "@/lib/utils";
 
 interface DwellButtonProps {
@@ -9,7 +10,8 @@ interface DwellButtonProps {
   className?: string;
   dwellMs?: number;
   disabled?: boolean;
-  variant?: "default" | "ghost" | "danger" | "success";
+  variant?: "default" | "primary" | "secondary" | "ghost" | "danger";
+  showCountdown?: boolean;
 }
 
 const DWELL_DEFAULT = 1400;
@@ -21,14 +23,17 @@ export function DwellButton({
   dwellMs = DWELL_DEFAULT,
   disabled = false,
   variant = "default",
+  showCountdown = false,
 }: DwellButtonProps) {
   const cursor = useCursor();
+  const hand = useHandTracking();
   const ref = React.useRef<HTMLButtonElement>(null);
   const [hovered, setHovered] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
   const [confirmed, setConfirmed] = React.useState(false);
   const startRef = React.useRef<number | null>(null);
   const rafRef = React.useRef<number | null>(null);
+  const pinchHandledRef = React.useRef(false);
 
   // Cursor-based hover detection
   React.useEffect(() => {
@@ -44,6 +49,19 @@ export function DwellButton({
       cursor.y <= r.bottom;
     setHovered(inside);
   }, [cursor.x, cursor.y, cursor.active, disabled]);
+
+  // Pinch instant-confirm shortcut
+  React.useEffect(() => {
+    if (!hovered || disabled || confirmed) {
+      pinchHandledRef.current = false;
+      return;
+    }
+    if (hand.isPinching && !pinchHandledRef.current) {
+      pinchHandledRef.current = true;
+      setConfirmed(true);
+      setTimeout(() => onConfirm(), 200);
+    }
+  }, [hand.isPinching, hovered, disabled, confirmed, onConfirm]);
 
   // Dwell progression
   React.useEffect(() => {
@@ -64,7 +82,7 @@ export function DwellButton({
         setConfirmed(true);
         setTimeout(() => {
           onConfirm();
-        }, 280);
+        }, 250);
         return;
       }
       rafRef.current = requestAnimationFrame(tick);
@@ -76,17 +94,21 @@ export function DwellButton({
   }, [hovered, dwellMs, onConfirm, disabled, confirmed]);
 
   const variantClass = {
-    default: "glass-strong text-foreground hover:border-primary/50",
-    ghost: "glass text-foreground/80 hover:border-primary/30",
-    danger: "glass-strong text-destructive border-destructive/30",
-    success:
-      "text-primary-foreground border-primary/60 shadow-glow",
+    default:
+      "bg-white border-border text-foreground hover:border-primary",
+    primary:
+      "bg-primary border-primary text-primary-foreground",
+    secondary:
+      "bg-white border-border text-foreground hover:border-primary",
+    ghost:
+      "bg-transparent border-transparent text-muted-foreground hover:text-foreground hover:bg-muted shadow-none",
+    danger:
+      "bg-white border-border text-destructive hover:border-destructive",
   }[variant];
 
-  const variantStyle =
-    variant === "success"
-      ? { background: "var(--gradient-primary)" }
-      : undefined;
+  const isFilled = variant === "primary" || confirmed;
+  const ringColor = "#0F766E";
+  const remainingSecs = Math.max(0, Math.ceil((dwellMs * (1 - progress)) / 1000));
 
   return (
     <button
@@ -94,17 +116,24 @@ export function DwellButton({
       type="button"
       disabled={disabled}
       onClick={() => !disabled && onConfirm()}
-      style={variantStyle}
       className={cn(
-        "relative overflow-hidden rounded-2xl border transition-all duration-300",
-        "focus:outline-none disabled:opacity-50",
+        "relative overflow-hidden rounded-2xl border transition-colors duration-200",
+        "focus:outline-none focus-visible:ring-4 focus-visible:ring-primary/35",
+        "disabled:opacity-50 cursor-pointer",
+        variant !== "ghost" && "shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_rgba(15,23,42,0.06)]",
         variantClass,
-        hovered && !confirmed && "scale-[1.02] border-primary/70",
-        confirmed && "scale-[1.06]",
+        hovered && !confirmed && variant === "default" && "bg-[var(--hover-tint)] border-primary",
+        hovered && !confirmed && variant === "secondary" && "bg-[var(--hover-tint)] border-primary",
+        confirmed && variant !== "ghost" && "bg-primary border-primary text-primary-foreground",
         className,
       )}
+      style={
+        confirmed
+          ? { transform: "scale(1.03)", transition: "transform 250ms ease-out, background-color 250ms" }
+          : undefined
+      }
     >
-      {/* Dwell progress ring (SVG) */}
+      {/* Dwell progress ring */}
       <AnimatePresence>
         {hovered && progress > 0 && !confirmed && (
           <motion.svg
@@ -116,54 +145,35 @@ export function DwellButton({
             preserveAspectRatio="none"
           >
             <rect
-              x="1"
-              y="1"
-              width="98"
-              height="98"
+              x="2"
+              y="2"
+              width="96"
+              height="96"
+              rx="6"
               fill="none"
-              stroke="oklch(0.78 0.18 145)"
-              strokeWidth="2"
-              strokeDasharray="392"
-              strokeDashoffset={392 * (1 - progress)}
+              stroke={ringColor}
+              strokeWidth="3"
+              strokeDasharray="384"
+              strokeDashoffset={384 * (1 - progress)}
               style={{
                 transition: "stroke-dashoffset 60ms linear",
-                filter: "drop-shadow(0 0 8px oklch(0.78 0.18 145 / 80%))",
                 vectorEffect: "non-scaling-stroke",
               }}
-              pathLength={392}
+              pathLength={384}
             />
           </motion.svg>
         )}
       </AnimatePresence>
 
-      {/* Confirm pulse */}
-      <AnimatePresence>
-        {confirmed && (
-          <motion.div
-            initial={{ opacity: 0.8, scale: 1 }}
-            animate={{ opacity: 0, scale: 1.4 }}
-            transition={{ duration: 0.5 }}
-            className="pointer-events-none absolute inset-0 rounded-2xl"
-            style={{
-              background: "oklch(0.78 0.18 145 / 40%)",
-              boxShadow: "0 0 80px oklch(0.78 0.18 145 / 80%)",
-            }}
-          />
-        )}
-      </AnimatePresence>
+      <div className={cn("relative z-10", isFilled && variant !== "primary" && "text-primary-foreground")}>
+        {children}
+      </div>
 
-      {/* Hover glow */}
-      {hovered && !confirmed && (
-        <div
-          className="pointer-events-none absolute inset-0 rounded-2xl"
-          style={{
-            background:
-              "radial-gradient(circle at 50% 50%, oklch(0.78 0.18 145 / 12%) 0%, transparent 70%)",
-          }}
-        />
+      {showCountdown && hovered && progress > 0 && progress < 1 && !confirmed && (
+        <div className="pointer-events-none absolute right-3 top-3 rounded-full bg-primary px-2 py-0.5 text-[11px] font-semibold tabular-nums text-primary-foreground">
+          {remainingSecs}s
+        </div>
       )}
-
-      <div className="relative z-10">{children}</div>
     </button>
   );
 }

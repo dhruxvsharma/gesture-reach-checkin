@@ -35,17 +35,18 @@ function ReceiptPage() {
   };
   return (
     <div className="flex h-full w-full flex-col items-center justify-center px-12">
-      <h1 className="mb-3 text-5xl font-light tracking-tight">How should we send your receipt?</h1>
+      <div className="mb-2 text-xs font-semibold uppercase tracking-[0.25em] text-primary">Step 9 of 11</div>
+      <h1 className="font-serif mb-3 text-5xl font-light tracking-tight text-foreground">How should we send your receipt?</h1>
       <p className="mb-12 text-lg text-muted-foreground">Choose your preferred delivery method</p>
       <div className="grid w-full max-w-5xl grid-cols-3 gap-5">
         {OPTIONS.map((o) => (
-          <DwellButton key={o.id} onConfirm={() => choose(o.id)} className="flex flex-col items-start p-8 text-left">
-            <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/15">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="text-primary">
+          <DwellButton key={o.id} onConfirm={() => choose(o.id)} className="flex flex-col items-start p-8 text-left min-h-[220px]">
+            <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-accent">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
                 {o.icon}
               </svg>
             </div>
-            <h3 className="mb-1 text-2xl font-medium">{o.title}</h3>
+            <h3 className="font-serif mb-1 text-2xl font-medium text-foreground">{o.title}</h3>
             <p className="text-sm text-muted-foreground">{o.detail}</p>
           </DwellButton>
         ))}

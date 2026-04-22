@@ -33,42 +33,50 @@ function ScreeningPage() {
   };
 
   const q = QUESTIONS[step];
+  const progressPct = ((step + 1) / QUESTIONS.length) * 100;
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center px-12">
-      <div className="mb-6 text-xs uppercase tracking-[0.3em] text-muted-foreground">
-        Health screening · Question {step + 1} of {QUESTIONS.length}
-      </div>
-      <div className="mb-10 flex gap-2">
-        {QUESTIONS.map((_, i) => (
-          <div
-            key={i}
-            className="h-1.5 w-16 rounded-full transition-all"
-            style={{ background: i <= step ? "var(--gradient-primary)" : "oklch(1 0 0 / 12%)" }}
-          />
-        ))}
+      <div className="mb-2 text-xs font-semibold uppercase tracking-[0.25em] text-primary">Step 6 of 11 · Health screening</div>
+      <div className="mb-2 text-sm font-medium text-foreground">Question {step + 1} of {QUESTIONS.length}</div>
+      <div className="mb-12 h-1.5 w-64 overflow-hidden rounded-full bg-muted">
+        <div
+          className="h-full bg-primary transition-all duration-500"
+          style={{ width: `${progressPct}%` }}
+        />
       </div>
 
       <AnimatePresence mode="wait">
         <motion.h1
           key={step}
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          className="mb-16 max-w-3xl text-center text-4xl font-light leading-tight tracking-tight"
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.25 }}
+          className="font-serif mb-12 max-w-3xl text-center text-4xl font-light leading-tight tracking-tight text-foreground text-balance"
         >
           {q.text}
         </motion.h1>
       </AnimatePresence>
 
-      <div className="grid w-full max-w-2xl grid-cols-2 gap-6">
-        <DwellButton onConfirm={() => answer(false)} className="flex flex-col items-center justify-center py-12">
-          <div className="mb-3 text-5xl">✓</div>
-          <div className="text-2xl font-medium">No</div>
+      <div className="grid w-full max-w-3xl grid-cols-2 gap-6">
+        <DwellButton onConfirm={() => answer(false)} className="flex flex-col items-center justify-center py-12 min-h-[200px]">
+          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
+              <path d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <div className="text-2xl font-medium text-foreground">No</div>
         </DwellButton>
-        <DwellButton onConfirm={() => answer(true)} className="flex flex-col items-center justify-center py-12">
-          <div className="mb-3 text-5xl">!</div>
-          <div className="text-2xl font-medium">Yes</div>
+        <DwellButton onConfirm={() => answer(true)} className="flex flex-col items-center justify-center py-12 min-h-[200px]">
+          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-destructive">
+              <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+          </div>
+          <div className="text-2xl font-medium text-foreground">Yes</div>
         </DwellButton>
       </div>
     </div>
