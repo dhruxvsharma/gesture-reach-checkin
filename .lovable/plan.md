@@ -1,50 +1,91 @@
 
-# Contactless Patient Check-In Kiosk — Touchless Build
+# Touchless Kiosk — Light, Accessible Redesign (ui-ux-pro-max applied)
 
-A real hand-tracking kiosk experience for hospital patient check-in. Webcam-driven, dwell-to-select interactions, refined dark glassmorphic aesthetic, and the full patient journey.
+Move from the dark glassmorphic look to a **calm clinical light theme** built around clarity, large targets, and confidence. Same flow, new visual language.
 
-## Tech approach
-- **Hand tracking**: MediaPipe Hands (via `@mediapipe/tasks-vision`) running in the browser. Tracks index fingertip → maps to a virtual cursor on screen.
-- **Selection model**: Hover any interactive element for ~1.4s → circular dwell-progress ring fills around it → confirm. No clicks anywhere.
-- **Confirmation feedback**: Dwell ring fills with the green accent → on completion the element pulses outward (scale + glow), screen briefly tints green, soft transition to next screen.
-- **Voice fallback**: Lightweight optional voice prompts ("Yes" / "No" / "Next") for confirmation steps — not required.
-- **Camera permission gate**: First load asks for camera; falls back to mouse-hover dwell for demo/testing if denied.
+## Design system (derived from ui-ux-pro-max guidance for healthcare service)
 
-## Visual direction (refined Figma)
-- Dark base `#1E1E1E`, layered glass cards with subtle gradient borders.
-- Green accent (`#22C55E` family) for active/confirm states.
-- Bigger type, generous spacing — sized for a real 1080p+ kiosk display (uses full viewport, not a phone frame).
-- Smooth scene transitions (fade + slight scale).
-- Persistent top status bar: SmartCare logo · current step · live "hand detected" indicator.
-- Persistent bottom hint: "Hover to select · Hold for 1.5s to confirm" + tiny live thumbnail of detected hand position.
+**Style: Soft clinical minimalism** — high readability, generous whitespace, real surfaces with real borders. No glow, no gradient text, no glass blur, no ambient orbs.
 
-## Full patient journey (routes)
+**Color palette (AA-compliant on white):**
+- Background: `#F5F6F4` warm off-white
+- Surface: `#FFFFFF` with `#E5E7E2` 1px border
+- Text primary: `#0F172A` (slate-900)
+- Text secondary: `#475569` (slate-600) — meets 4.5:1
+- Primary action: `#0F766E` deep medical teal
+- Primary action text: `#FFFFFF`
+- Hover tint: `#ECFDF5` teal-50
+- Destructive (Not me): `#B91C1C` text-only, never as fill
+- Focus ring: 3px `#0F766E` at 35%
 
-1. **Welcome / Wave to begin** (`/`) — Animated gesture prompt, big "Wave to start" with live hand detection lighting up when seen.
-2. **Language select** (`/language`) — English / Español / 中文 / العربية / हिन्दी, hover-to-select tiles.
-3. **Sanitization reminder** (`/sanitize`) — Brief "Please sanitize hands" with a 5s auto-advance + dwell-to-skip.
-4. **Patient identification** (`/identify`) — Voice ID / QR Code / Insurance Card. Choose identification method.
-5. **Verify appointment** (`/verify`) — Show patient + appointment card. Confirm / Not me.
-6. **Insurance verification** (`/insurance`) — Show insurance on file, confirm or update.
-7. **Health screening** (`/screening`) — 3-question flow (fever, symptoms, exposure), each Yes/No with dwell-select.
-8. **Symptom checker** (`/symptoms`) — If anything flagged in screening, multi-select symptom grid.
-9. **Copay / Payment** (`/payment`) — Show amount due, Pay now / Pay later / Bill insurance options.
-10. **Receipt delivery** (`/receipt`) — Email / SMS / Print, hover to select.
-11. **Check-in complete** (`/complete`) — Queue number, wait time, building/floor directions, "Thank you".
-12. **Feedback** (`/feedback`) — Quick thumbs up/down on the experience, dwell-confirm, then auto-reset to `/`.
+**Typography (Google Fonts pairing):**
+- Headings: **Fraunces** (humanist serif — warm, trustworthy, healthcare-appropriate)
+- Body / UI: **Inter** (already loaded)
+- Sizes: H1 64px, H2 40px, label 28px, body 18px, caption 14px
+- Line-height 1.5 body, 1.15 headings; max line-length 65ch
 
-Idle timeout (90s of no hand detected) on any screen → returns to `/`.
+**Shadows (replace glow utilities):**
+- Card: `0 1px 2px rgba(15,23,42,0.04), 0 8px 24px rgba(15,23,42,0.06)`
+- Hover: `0 2px 4px rgba(15,23,42,0.06), 0 16px 40px rgba(15,23,42,0.10)`
 
-## Reusable interaction primitives
-- `<DwellButton>` — wraps any option; accepts hover state from the gesture cursor or mouse, shows the SVG progress ring, fires `onConfirm` after dwell duration, plays the pulse animation.
-- `<GestureCursor>` — fixed-position floating dot that follows the tracked fingertip, with a soft trailing glow.
-- `<KioskShell>` — top status bar + bottom hint + idle-timeout reset, used by every route.
-- `useHandTracking()` hook — owns the MediaPipe loop, exposes `{ x, y, isDetected, gesture }`.
-- `useDwell(targetId)` hook — tracks how long the cursor has been over a target, returns 0–1 progress.
+## Interaction primitive updates
 
-## Out of scope (for this pass)
-- Real backend / database — all patient data is mocked.
-- Actual payment processing — UI only.
-- Printer/email/SMS integration — confirmation screens only.
+**`DwellButton`**
+- White surface, 1px neutral border, soft shadow. Hover: teal border + `#ECFDF5` tint.
+- Dwell ring: 4px solid teal stroke (no `drop-shadow` filter).
+- Confirm: solid teal fill, white label, single 250ms scale 1.0→1.04→1.0. Removes outward pulse glow.
+- New variants: `primary` (filled teal — recommended action), `secondary` (white), `ghost` (text-only, used for "Not me").
+- Pinch (already detected) becomes instant-confirm shortcut.
+- Honors `prefers-reduced-motion`.
 
-After approval I'll wire up MediaPipe, build the shared kiosk shell + dwell primitives, then implement all 12 routes with the refined visual system.
+**`GestureCursor`**
+- Solid 24px teal dot with 2px white ring. No trailing glow, no pulsing halo.
+
+**`KioskShell`**
+- White top bar, subtle bottom hairline. Remove `glass`, remove ambient gradient.
+- Logomark: solid teal tile + "SmartCare" wordmark, tagline "Patient Check-in".
+- Step indicator: explicit text **"Step 3 of 8 · Verify identity"** + slim progress bar (replaces dot row).
+- Hand status pill: dot + plain text "Camera ready" / "Show your hand" (no glow).
+- Bottom hint: two-line, larger, quiet — **"Point with your index finger"** / "Hold over a button for 1.5 seconds to choose".
+- Camera thumb: white-framed card labeled **"You"** so users know what it is.
+- Page transition: simple opacity fade only (drop the scale).
+
+## Page-level patterns (applied across all 12 routes)
+
+Consistent header block: small step label · large question (Fraunces) · short helper sentence.
+
+- **Welcome (`/`)** — drop floating glowing hand orb. Clean line-art hand icon, "Wave to begin" prompt, wave-progress becomes a horizontal bar under the prompt (not a circular halo). Drop "text-gradient-primary" treatment.
+- **Language (`/language`)** — white tiles, native script as the hero (huge), English label below, flag shrunk to a corner badge.
+- **Sanitize (`/sanitize`)** — clean illustrated soap/hand icon, large countdown numeral.
+- **Identify (`/identify`)** — three white cards, teal icon tiles, clearer copy.
+- **Verify (`/verify`)** — real white card with teal-initials avatar, labeled rows. **"Yes, that's me"** is filled teal primary; **"Not me"** is a quiet ghost button (right-aligned). Clear hierarchy.
+- **Insurance (`/insurance`)** — same card pattern as Verify.
+- **Screening (`/screening`)** — large mirrored Yes/No cards with proper SVG icons (check / alert) + word labels. Replace `✓` / `!` emoji-as-icon. Progress dots become "Question 2 of 3" + thin bar.
+- **Symptoms (`/symptoms`)** — multi-select grid, selected = teal border + subtle tint (no glow).
+- **Payment (`/payment`)** — amount due as the dominant typographic element, three clear options below.
+- **Receipt (`/receipt`)** — three method tiles with proper icons.
+- **Complete (`/complete`)** — queue number becomes the hero: huge teal numeral on white, calm supporting info beneath.
+- **Feedback (`/feedback`)** — thumbs up/down with proper SVG icons (no emoji), auto-reset.
+
+## Accessibility upgrades (per skill priorities 1–2)
+
+- Min target size: 180×180 for primary tiles, 88px tall for inline buttons.
+- AA contrast checked for default / hover / confirm / disabled.
+- Every icon paired with a text label.
+- Subtle "1s" countdown text inside the dwell ring so users understand the wait.
+- `prefers-reduced-motion`: skip pulse + transition fade.
+- `cursor: none` on body kept only when camera active; restore default cursor in mouse fallback.
+
+## Files touched
+
+- `src/styles.css` — full theme rewrite (light tokens, drop glass/glow utilities, add Fraunces import, new shadow scale).
+- `src/components/kiosk/DwellButton.tsx` — new variants, no-glow ring, pinch instant-confirm, reduced-motion.
+- `src/components/kiosk/GestureCursor.tsx` — solid dot.
+- `src/components/kiosk/KioskShell.tsx` — light status bar, numbered step indicator, "You" camera label, drop ambient gradient, simpler transition.
+- All 12 route files in `src/routes/` — apply header pattern, swap glass cards for white cards, retire `text-gradient-primary` / `shadow-glow`, restructure Yes/No and tile layouts, replace emoji-as-icon with SVG.
+
+## Out of scope
+
+- Translations (English only this pass).
+- Sound design.
+- Real backend wiring.
