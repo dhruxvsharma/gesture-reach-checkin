@@ -14,61 +14,54 @@ function StatusBar() {
   const hand = useHandTracking();
   const stepIdx = STEPS.findIndex((s) => s.path === location.pathname);
   const current = stepIdx >= 0 ? stepIdx : 0;
+  const total = STEPS.length;
+  const currentStep = STEPS[current];
+  const progressPct = (current / (total - 1)) * 100;
 
   return (
-    <div className="pointer-events-none fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-10 py-6">
-      <div className="flex items-center gap-3">
-        <div
-          className="flex h-10 w-10 items-center justify-center rounded-xl"
-          style={{ background: "var(--gradient-primary)" }}
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-primary-foreground">
-            <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-          </svg>
-        </div>
-        <div>
-          <div className="text-sm font-semibold tracking-tight">SmartCare</div>
-          <div className="text-[11px] uppercase tracking-widest text-muted-foreground">
-            Kiosk · Touchless check-in
+    <div className="fixed left-0 right-0 top-0 z-40 border-b border-border bg-white">
+      <div className="flex items-center justify-between gap-6 px-10 py-4">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-primary-foreground">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+            </svg>
+          </div>
+          <div>
+            <div className="text-sm font-semibold tracking-tight text-foreground">SmartCare</div>
+            <div className="text-[11px] text-muted-foreground">Patient Check-in</div>
           </div>
         </div>
-      </div>
 
-      {stepIdx > 0 && (
-        <div className="glass flex items-center gap-2 rounded-full px-5 py-2">
-          {STEPS.slice(1).map((s, i) => (
-            <div
-              key={s.path}
-              className="h-1.5 rounded-full transition-all"
-              style={{
-                width: i + 1 === current ? 32 : 12,
-                background:
-                  i + 1 <= current
-                    ? "var(--gradient-primary)"
-                    : "oklch(1 0 0 / 15%)",
-              }}
-            />
-          ))}
+        {stepIdx > 0 && (
+          <div className="flex flex-1 items-center justify-center gap-4">
+            <div className="text-sm font-medium text-foreground">
+              Step {current} of {total - 1} · <span className="text-muted-foreground">{currentStep?.label}</span>
+            </div>
+            <div className="h-1.5 w-48 overflow-hidden rounded-full bg-muted">
+              <div
+                className="h-full bg-primary transition-all duration-500"
+                style={{ width: `${progressPct}%` }}
+              />
+            </div>
+          </div>
+        )}
+
+        <div className="flex items-center gap-2 rounded-full border border-border bg-white px-3 py-1.5">
+          <div
+            className="h-2 w-2 rounded-full transition-colors"
+            style={{
+              background: hand.isDetected ? "#0F766E" : "#94A3B8",
+            }}
+          />
+          <span className="text-xs font-medium text-muted-foreground">
+            {hand.permissionState !== "granted"
+              ? "Camera off"
+              : hand.isDetected
+                ? "Camera ready"
+                : "Show your hand"}
+          </span>
         </div>
-      )}
-
-      <div className="glass flex items-center gap-2 rounded-full px-4 py-2">
-        <div
-          className="h-2 w-2 rounded-full transition-colors"
-          style={{
-            background: hand.isDetected
-              ? "oklch(0.78 0.18 145)"
-              : "oklch(0.6 0.02 270)",
-            boxShadow: hand.isDetected ? "0 0 8px oklch(0.78 0.18 145)" : undefined,
-          }}
-        />
-        <span className="text-xs text-muted-foreground">
-          {hand.permissionState !== "granted"
-            ? "Camera off"
-            : hand.isDetected
-              ? "Hand detected"
-              : "Show your hand"}
-        </span>
       </div>
     </div>
   );
@@ -77,17 +70,14 @@ function StatusBar() {
 function HintBar() {
   const hand = useHandTracking();
   return (
-    <div className="pointer-events-none fixed bottom-0 left-0 right-0 z-50 flex items-center justify-center px-10 py-6">
-      <div className="glass flex items-center gap-3 rounded-full px-6 py-3">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-primary">
-          <circle cx="12" cy="12" r="10" />
-          <path d="M12 6v6l4 2" />
-        </svg>
-        <span className="text-xs text-muted-foreground">
-          {hand.isDetected
-            ? "Point with your index finger · Hold over an option for 1.5s to confirm"
-            : "Hover or use your hand · Hold over an option to confirm"}
-        </span>
+    <div className="pointer-events-none fixed bottom-0 left-0 right-0 z-40 flex items-center justify-center px-10 pb-6">
+      <div className="rounded-2xl border border-border bg-white/90 px-6 py-3 text-center shadow-[0_1px_2px_rgba(15,23,42,0.04)] backdrop-blur">
+        <div className="text-sm font-medium text-foreground">
+          {hand.isDetected ? "Point with your index finger" : "Show your hand to the camera"}
+        </div>
+        <div className="text-xs text-muted-foreground">
+          Hold over a button for 1.5 seconds to choose · Pinch to confirm instantly
+        </div>
       </div>
     </div>
   );
@@ -113,8 +103,11 @@ function CameraThumb() {
           if (hand.isDetected) {
             ctx.beginPath();
             ctx.arc(hand.x * c.width, hand.y * c.height, 6, 0, Math.PI * 2);
-            ctx.fillStyle = "oklch(0.78 0.18 145)";
+            ctx.fillStyle = "#0F766E";
             ctx.fill();
+            ctx.strokeStyle = "#FFFFFF";
+            ctx.lineWidth = 2;
+            ctx.stroke();
           }
         }
       }
@@ -126,9 +119,12 @@ function CameraThumb() {
 
   if (!hand.videoEl) return null;
   return (
-    <div className="pointer-events-none fixed bottom-6 right-6 z-50">
-      <div className="glass overflow-hidden rounded-xl p-1">
-        <canvas ref={canvasRef} width={120} height={90} className="rounded-lg" />
+    <div className="pointer-events-none fixed bottom-28 right-6 z-40">
+      <div className="overflow-hidden rounded-xl border border-border bg-white p-1.5 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_rgba(15,23,42,0.06)]">
+        <canvas ref={canvasRef} width={140} height={100} className="block rounded-md" />
+        <div className="px-1 pt-1 pb-0.5 text-center text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+          You
+        </div>
       </div>
     </div>
   );
@@ -180,29 +176,20 @@ function ShellInner() {
       <IdleReset />
       <GestureCursor />
 
-      <main className="h-screen w-screen overflow-hidden">
+      <main className="h-screen w-screen overflow-hidden bg-background pt-20 pb-28">
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.02 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
             className="h-full w-full"
           >
             <Outlet />
           </motion.div>
         </AnimatePresence>
       </main>
-
-      {/* Ambient background gradients */}
-      <div
-        className="pointer-events-none fixed inset-0 -z-10"
-        style={{
-          background:
-            "radial-gradient(ellipse at 20% 10%, oklch(0.78 0.18 145 / 8%) 0%, transparent 50%), radial-gradient(ellipse at 80% 90%, oklch(0.5 0.18 220 / 6%) 0%, transparent 50%)",
-        }}
-      />
     </>
   );
 }
