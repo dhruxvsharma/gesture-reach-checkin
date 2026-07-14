@@ -10,7 +10,7 @@ function VerifyPage() {
   return (
     <div className="flex h-full w-full flex-col items-center justify-center px-12">
       <div className="mb-2 text-xs font-semibold uppercase tracking-[0.25em] text-primary">Step 4 of 11</div>
-      <h1 className="font-serif mb-3 text-5xl font-light tracking-tight text-foreground">Is this you?</h1>
+      <h1 className="font-sans mb-3 text-5xl font-bold tracking-tight text-foreground">Is this you?</h1>
       <p className="mb-10 text-lg text-muted-foreground">Confirm your appointment details</p>
 
       <div className="surface-card mb-10 w-full max-w-2xl rounded-3xl p-10">
@@ -19,7 +19,7 @@ function VerifyPage() {
             SM
           </div>
           <div>
-            <div className="font-serif text-3xl font-medium text-foreground">Sarah Mitchell</div>
+            <div className="font-sans text-3xl font-medium text-foreground">Sarah Mitchell</div>
             <div className="text-sm text-muted-foreground">DOB · March 14, 1987 · Patient #84291</div>
           </div>
         </div>

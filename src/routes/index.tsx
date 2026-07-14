@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useHandTracking } from "@/hooks/use-hand-tracking";
 import { DwellButton } from "@/components/kiosk/DwellButton";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import * as React from "react";
 
 export const Route = createFileRoute("/")({
@@ -44,30 +45,35 @@ function WelcomePage() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="mb-10 max-w-3xl text-center"
+        className="mb-8 max-w-4xl text-center"
       >
-        <div className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-primary">
-          SmartCare Clinic
-        </div>
-        <h1 className="font-serif mb-5 text-[64px] leading-[1.1] font-light tracking-tight text-foreground text-balance">
-          Welcome. Let's get you checked in.
+        <h1 className="mb-5 flex flex-col items-center justify-center gap-2">
+          <span className="font-sans text-[80px] font-bold leading-tight tracking-tight text-foreground">
+            Welcome
+          </span>
+          <span className="font-sans text-[40px] font-medium leading-tight tracking-tight text-muted-foreground">
+            let's get you checked in
+          </span>
         </h1>
-        <p className="mx-auto max-w-xl text-lg text-muted-foreground">
-          A touchless experience — no buttons, no waiting at the desk.
+        <p className="mx-auto max-w-xl text-lg text-muted-foreground leading-relaxed">
+          Experience a seamless, contactless check-in. Navigate using simple hand gestures for a safe and effortless arrival.
         </p>
       </motion.div>
 
-      <div className="mb-8 flex h-44 w-44 items-center justify-center rounded-3xl border border-border bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_rgba(15,23,42,0.06)]">
-        <svg width="88" height="88" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
-          <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15" />
-        </svg>
+      <div className="mb-6 flex h-40 w-40 shrink-0 items-end justify-center rounded-3xl border border-border bg-white shadow-sm overflow-hidden">
+        <DotLottieReact
+          src="https://lottie.host/f304b19c-a156-42e3-b652-7b4734c1fb88/9JMojXzauv.lottie"
+          loop
+          autoplay
+          className="h-[120%] w-[120%] origin-bottom translate-y-4"
+        />
       </div>
 
-      <p className="mb-4 text-2xl font-medium text-foreground">
+      <p className="mb-2 text-2xl font-medium text-foreground">
         {hand.isDetected ? "Hold steady to begin…" : "Wave your hand to begin"}
       </p>
 
-      <div className="mb-10 h-2 w-72 overflow-hidden rounded-full bg-muted">
+      <div className="mb-6 h-2 w-72 overflow-hidden rounded-full bg-muted">
         <div
           className="h-full bg-primary transition-all"
           style={{ width: `${waveProgress * 100}%`, transitionDuration: "80ms" }}

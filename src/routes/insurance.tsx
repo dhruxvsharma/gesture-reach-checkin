@@ -10,14 +10,14 @@ function InsurancePage() {
   return (
     <div className="flex h-full w-full flex-col items-center justify-center px-12">
       <div className="mb-2 text-xs font-semibold uppercase tracking-[0.25em] text-primary">Step 5 of 11</div>
-      <h1 className="font-serif mb-3 text-5xl font-light tracking-tight text-foreground">Insurance on file</h1>
+      <h1 className="font-sans mb-3 text-5xl font-bold tracking-tight text-foreground">Insurance on file</h1>
       <p className="mb-10 text-lg text-muted-foreground">Is this still correct?</p>
 
       <div className="surface-card mb-10 w-full max-w-2xl rounded-3xl p-10">
         <div className="mb-6 flex items-center justify-between">
           <div>
             <div className="mb-1 text-xs uppercase tracking-widest text-muted-foreground">Provider</div>
-            <div className="font-serif text-2xl font-medium text-foreground">Blue Cross Blue Shield</div>
+            <div className="font-sans text-2xl font-medium text-foreground">Blue Cross Blue Shield</div>
           </div>
           <div className="rounded-full bg-accent px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary">
             Active

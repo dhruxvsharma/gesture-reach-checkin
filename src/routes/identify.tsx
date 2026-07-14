@@ -45,7 +45,7 @@ function IdentifyPage() {
   return (
     <div className="flex h-full w-full flex-col items-center justify-center px-12">
       <div className="mb-2 text-xs font-semibold uppercase tracking-[0.25em] text-primary">Step 3 of 11</div>
-      <h1 className="font-serif mb-3 text-5xl font-light tracking-tight text-foreground">How would you like to check in?</h1>
+      <h1 className="font-sans mb-3 text-5xl font-bold tracking-tight text-foreground">How would you like to check in?</h1>
       <p className="mb-12 text-lg text-muted-foreground">Choose any method that works for you</p>
       <div className="grid w-full max-w-6xl grid-cols-3 gap-6">
         {METHODS.map((m) => (
@@ -55,7 +55,7 @@ function IdentifyPage() {
                 {m.icon}
               </svg>
             </div>
-            <h3 className="font-serif mb-2 text-2xl font-medium text-foreground">{m.title}</h3>
+            <h3 className="font-sans mb-2 text-2xl font-medium text-foreground">{m.title}</h3>
             <p className="text-sm text-muted-foreground">{m.desc}</p>
           </DwellButton>
         ))}

@@ -53,13 +53,13 @@ function ScreeningPage() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.25 }}
-          className="font-serif mb-12 max-w-3xl text-center text-4xl font-light leading-tight tracking-tight text-foreground text-balance"
+          className="font-sans mb-12 max-w-3xl text-center text-4xl font-light leading-tight tracking-tight text-foreground text-balance"
         >
           {q.text}
         </motion.h1>
       </AnimatePresence>
 
-      <div className="grid w-full max-w-3xl grid-cols-2 gap-6">
+      <div key={step} className="grid w-full max-w-3xl grid-cols-2 gap-6">
         <DwellButton onConfirm={() => answer(false)} className="flex flex-col items-center justify-center py-12 min-h-[200px]">
           <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary">

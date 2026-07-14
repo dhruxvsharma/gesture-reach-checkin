@@ -30,7 +30,7 @@ function SymptomsPage() {
   return (
     <div className="flex h-full w-full flex-col items-center justify-center px-12">
       <div className="mb-2 text-xs font-semibold uppercase tracking-[0.25em] text-primary">Step 7 of 11</div>
-      <h1 className="font-serif mb-3 text-5xl font-light tracking-tight text-foreground">Which symptoms apply?</h1>
+      <h1 className="font-sans mb-3 text-5xl font-bold tracking-tight text-foreground">Which symptoms apply?</h1>
       <p className="mb-10 text-lg text-muted-foreground">Hover over all that you're experiencing</p>
 
       <div className="mb-10 grid w-full max-w-5xl grid-cols-4 gap-4">

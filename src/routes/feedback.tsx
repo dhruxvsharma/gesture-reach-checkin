@@ -33,7 +33,7 @@ function FeedbackPage() {
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
           </svg>
         </div>
-        <h1 className="font-serif mb-3 text-5xl font-light tracking-tight text-foreground">Thank you</h1>
+        <h1 className="font-sans mb-3 text-5xl font-bold tracking-tight text-foreground">Thank you</h1>
         <p className="text-lg text-muted-foreground">Have a wonderful visit, Sarah.</p>
       </motion.div>
     );
@@ -42,7 +42,7 @@ function FeedbackPage() {
   return (
     <div className="flex h-full w-full flex-col items-center justify-center px-12">
       <div className="mb-2 text-xs font-semibold uppercase tracking-[0.25em] text-primary">Step 11 of 11</div>
-      <h1 className="font-serif mb-3 text-5xl font-light tracking-tight text-foreground">How was check-in?</h1>
+      <h1 className="font-sans mb-3 text-5xl font-bold tracking-tight text-foreground">How was check-in?</h1>
       <p className="mb-14 text-lg text-muted-foreground">Quick feedback helps us improve</p>
       <div className="grid w-full max-w-3xl grid-cols-2 gap-6">
         <DwellButton onConfirm={() => choose("down")} className="flex flex-col items-center py-14 min-h-[260px]">

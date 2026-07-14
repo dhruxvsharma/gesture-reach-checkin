@@ -19,7 +19,7 @@ function StatusBar() {
   const progressPct = (current / (total - 1)) * 100;
 
   return (
-    <div className="fixed left-0 right-0 top-0 z-40 border-b border-border bg-white">
+    <div className="fixed left-0 right-0 top-0 z-40 bg-transparent">
       <div className="flex items-center justify-between gap-6 px-10 py-4">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary">
