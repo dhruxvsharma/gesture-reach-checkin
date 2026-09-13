@@ -28,12 +28,14 @@ function SymptomsPage() {
   };
 
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center px-12">
-      <div className="mb-2 text-xs font-semibold uppercase tracking-[0.25em] text-primary">Step 7 of 11</div>
-      <h1 className="font-sans mb-3 text-5xl font-bold tracking-tight text-foreground">Which symptoms apply?</h1>
-      <p className="mb-10 text-lg text-muted-foreground">Hover over all that you're experiencing</p>
+    <div className="kiosk-page">
+      <div className="kiosk-page-header">
+        <div className="kiosk-step">Step 7 of 11</div>
+        <h1 className="kiosk-title">Which symptoms apply?</h1>
+        <p className="kiosk-subtitle">Choose all that you’re experiencing</p>
+      </div>
 
-      <div className="mb-10 grid w-full max-w-5xl grid-cols-4 gap-4">
+      <div className="kiosk-choice-grid mt-9 mb-8 max-w-5xl grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
         {SYMPTOMS.map((s) => {
           const isSel = selected.includes(s);
           return (
@@ -42,7 +44,7 @@ function SymptomsPage() {
               onConfirm={() => toggle(s)}
               dwellMs={800}
               className={cn(
-                "py-6 text-base font-medium",
+                "min-h-16 py-4 text-base font-medium",
                 isSel && "border-primary bg-accent text-primary",
               )}
             >
@@ -59,7 +61,7 @@ function SymptomsPage() {
         })}
       </div>
 
-      <DwellButton variant="primary" onConfirm={finish} className="px-12 py-5 text-lg font-medium">
+      <DwellButton variant="primary" onConfirm={finish} className="px-10 py-4 text-lg font-medium">
         Continue ({selected.length} selected)
       </DwellButton>
     </div>

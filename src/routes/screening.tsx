@@ -36,10 +36,12 @@ function ScreeningPage() {
   const progressPct = ((step + 1) / QUESTIONS.length) * 100;
 
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center px-12">
-      <div className="mb-2 text-xs font-semibold uppercase tracking-[0.25em] text-primary">Step 6 of 11 · Health screening</div>
-      <div className="mb-2 text-sm font-medium text-foreground">Question {step + 1} of {QUESTIONS.length}</div>
-      <div className="mb-12 h-1.5 w-64 overflow-hidden rounded-full bg-muted">
+    <div className="kiosk-page">
+      <div className="kiosk-page-header">
+        <div className="kiosk-step">Step 6 of 11 · Health screening</div>
+        <div className="mt-1 text-sm font-medium text-foreground">Question {step + 1} of {QUESTIONS.length}</div>
+      </div>
+      <div className="mt-5 mb-9 h-1.5 w-64 overflow-hidden rounded-full bg-muted">
         <div
           className="h-full bg-primary transition-all duration-500"
           style={{ width: `${progressPct}%` }}
@@ -53,14 +55,14 @@ function ScreeningPage() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.25 }}
-          className="font-sans mb-12 max-w-3xl text-center text-4xl font-light leading-tight tracking-tight text-foreground text-balance"
+          className="font-sans mb-10 max-w-3xl text-center text-4xl font-light leading-tight tracking-tight text-foreground text-balance"
         >
           {q.text}
         </motion.h1>
       </AnimatePresence>
 
-      <div key={step} className="grid w-full max-w-3xl grid-cols-2 gap-6">
-        <DwellButton onConfirm={() => answer(false)} className="flex flex-col items-center justify-center py-12 min-h-[200px]">
+      <div key={step} className="kiosk-choice-grid max-w-3xl grid-cols-1 sm:grid-cols-2">
+        <DwellButton onConfirm={() => answer(false)} className="flex min-h-[180px] flex-col items-center justify-center py-10">
           <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
               <path d="M5 13l4 4L19 7" />
@@ -68,7 +70,7 @@ function ScreeningPage() {
           </div>
           <div className="text-2xl font-medium text-foreground">No</div>
         </DwellButton>
-        <DwellButton onConfirm={() => answer(true)} className="flex flex-col items-center justify-center py-12 min-h-[200px]">
+        <DwellButton onConfirm={() => answer(true)} className="flex min-h-[180px] flex-col items-center justify-center py-10">
           <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-destructive">
               <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />

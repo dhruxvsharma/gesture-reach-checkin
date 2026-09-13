@@ -43,19 +43,21 @@ const METHODS = [
 function IdentifyPage() {
   const navigate = useNavigate();
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center px-12">
-      <div className="mb-2 text-xs font-semibold uppercase tracking-[0.25em] text-primary">Step 3 of 11</div>
-      <h1 className="font-sans mb-3 text-5xl font-bold tracking-tight text-foreground">How would you like to check in?</h1>
-      <p className="mb-12 text-lg text-muted-foreground">Choose any method that works for you</p>
-      <div className="grid w-full max-w-6xl grid-cols-3 gap-6">
+    <div className="kiosk-page">
+      <div className="kiosk-page-header">
+        <div className="kiosk-step">Step 3 of 11</div>
+        <h1 className="kiosk-title">How would you like to check in?</h1>
+        <p className="kiosk-subtitle">Choose any method that works for you</p>
+      </div>
+      <div className="kiosk-choice-grid mt-9 max-w-6xl grid-cols-1 md:grid-cols-3">
         {METHODS.map((m) => (
-          <DwellButton key={m.id} onConfirm={() => navigate({ to: "/verify" })} className="flex flex-col items-start p-10 text-left min-h-[260px]">
-            <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-accent">
+          <DwellButton key={m.id} onConfirm={() => navigate({ to: "/verify" })} className="flex min-h-[220px] flex-col items-start p-7 text-left sm:p-8">
+            <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-accent">
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
                 {m.icon}
               </svg>
             </div>
-            <h3 className="font-sans mb-2 text-2xl font-medium text-foreground">{m.title}</h3>
+            <h3 className="font-sans mb-2 text-xl font-semibold text-foreground">{m.title}</h3>
             <p className="text-sm text-muted-foreground">{m.desc}</p>
           </DwellButton>
         ))}

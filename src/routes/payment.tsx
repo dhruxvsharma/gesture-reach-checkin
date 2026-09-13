@@ -20,18 +20,20 @@ function PaymentPage() {
   };
 
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center px-12">
-      <div className="mb-2 text-xs font-semibold uppercase tracking-[0.25em] text-primary">Step 8 of 11</div>
-      <div className="mb-3 text-sm uppercase tracking-widest text-muted-foreground">Today's copay</div>
-      <h1 className="font-sans mb-2 text-7xl font-bold tracking-tight text-foreground">
+    <div className="kiosk-page">
+      <div className="kiosk-page-header">
+        <div className="kiosk-step">Step 8 of 11</div>
+        <div className="mt-2 text-sm font-semibold uppercase tracking-[0.18em] text-muted-foreground">Today’s copay</div>
+      <h1 className="mt-2 font-sans text-7xl font-bold tracking-tight text-foreground">
         $<span className="text-primary font-medium">35</span><span className="text-3xl text-muted-foreground">.00</span>
       </h1>
-      <p className="mb-12 text-lg text-muted-foreground">How would you like to handle payment?</p>
+        <p className="kiosk-subtitle">How would you like to handle payment?</p>
+      </div>
 
-      <div className="grid w-full max-w-5xl grid-cols-3 gap-5">
+      <div className="kiosk-choice-grid mt-9 max-w-5xl grid-cols-1 md:grid-cols-3">
         {OPTIONS.map((o) => (
-          <DwellButton key={o.id} onConfirm={() => choose(o.id)} className="flex flex-col items-start p-8 text-left min-h-[200px]">
-            <h3 className="font-sans mb-3 text-2xl font-medium text-foreground">{o.title}</h3>
+          <DwellButton key={o.id} onConfirm={() => choose(o.id)} className="flex min-h-[180px] flex-col items-start p-7 text-left sm:p-8">
+            <h3 className="font-sans mb-3 text-xl font-semibold text-foreground">{o.title}</h3>
             <p className="text-sm text-muted-foreground">{o.desc}</p>
           </DwellButton>
         ))}

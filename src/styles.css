@@ -128,7 +128,7 @@
   .text-balance {
     text-wrap: balance;
   }
-  
+
   .wave {
     animation-name: wave-animation;
     animation-duration: 2.5s;
@@ -147,6 +147,178 @@
    50% { transform: rotate(10.0deg) }
    60% { transform: rotate( 0.0deg) }
   100% { transform: rotate( 0.0deg) }
+}
+
+@keyframes gesture-coach-wave {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  20% {
+    transform: rotate(-10deg);
+  }
+  45% {
+    transform: rotate(10deg);
+  }
+  70% {
+    transform: rotate(-7deg);
+  }
+}
+
+@keyframes gesture-coach-wave-lines {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(0.9);
+  }
+  45% {
+    opacity: 0.9;
+    transform: scale(1.05);
+  }
+}
+
+.gesture-coach-wave-hand {
+  animation: gesture-coach-wave 2.4s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: 50% 90%;
+}
+
+.gesture-coach-wave-lines {
+  animation: gesture-coach-wave-lines 2.4s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.gesture-coach-lottie {
+  filter: brightness(0) saturate(100%) invert(34%) sepia(13%) saturate(3102%) hue-rotate(128deg) brightness(95%) contrast(88%);
+}
+
+.gesture-coach-static {
+  animation: none !important;
+}
+
+.gesture-coach-status {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.35rem;
+  width: 5.5rem;
+  height: 4rem;
+}
+
+.gesture-coach-status span {
+  width: 0.6rem;
+  height: 1.4rem;
+  border-radius: 999px;
+  background: var(--primary);
+  animation: gesture-coach-status 1.2s ease-in-out infinite;
+}
+
+.gesture-coach-status span:nth-child(2) {
+  height: 2.2rem;
+  animation-delay: 0.15s;
+}
+
+.gesture-coach-status span:nth-child(3) {
+  height: 1.8rem;
+  animation-delay: 0.3s;
+}
+
+@keyframes gesture-coach-status {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scaleY(0.7);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+@layer components {
+  .kiosk-page {
+    display: flex;
+    min-height: 100%;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2.25rem clamp(1.25rem, 5vw, 4rem) 3rem;
+  }
+
+  .kiosk-page-header {
+    display: flex;
+    width: 100%;
+    max-width: 64rem;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .kiosk-step {
+    margin-bottom: 0.65rem;
+    color: var(--primary);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .kiosk-title {
+    margin: 0;
+    color: var(--foreground);
+    font-size: clamp(2.25rem, 4vw, 3.6rem);
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+
+  .kiosk-subtitle {
+    margin-top: 0.9rem;
+    color: var(--muted-foreground);
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    line-height: 1.55;
+    text-wrap: balance;
+  }
+
+  .kiosk-content {
+    width: 100%;
+    max-width: 64rem;
+    margin-top: 2.25rem;
+  }
+
+  .kiosk-choice-grid {
+    display: grid;
+    width: 100%;
+    gap: 1rem;
+  }
+
+  .kiosk-panel {
+    width: 100%;
+    max-width: 42rem;
+    border-radius: 1.5rem;
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+  }
+}
+
+@media (max-width: 900px) {
+  .kiosk-page {
+    justify-content: flex-start;
+    padding-top: 1.5rem;
+  }
+
+  .kiosk-content {
+    margin-top: 1.75rem;
+  }
+
+  .gesture-coach {
+    bottom: 4.75rem;
+    left: 0.75rem;
+    width: min(22rem, calc(100vw - 1.5rem));
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

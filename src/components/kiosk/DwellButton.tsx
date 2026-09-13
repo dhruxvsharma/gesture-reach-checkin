@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useCursor } from "@/hooks/use-cursor";
 import { useHandTracking } from "@/hooks/use-hand-tracking";
 import { cn } from "@/lib/utils";
+import { logResearchEvent } from "@/lib/research-telemetry";
 
 interface DwellButtonProps {
   onConfirm: () => void;
@@ -15,6 +16,20 @@ interface DwellButtonProps {
 }
 
 const DWELL_DEFAULT = 1400;
+
+function textFromChildren(children: React.ReactNode): string {
+  return React.Children.toArray(children)
+    .map((child) => {
+      if (typeof child === "string" || typeof child === "number") return String(child);
+      if (React.isValidElement(child)) {
+        return textFromChildren((child.props as { children?: React.ReactNode }).children);
+      }
+      return "";
+    })
+    .join(" ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
 
 export function DwellButton({
   onConfirm,
@@ -31,6 +46,8 @@ export function DwellButton({
   const [hovered, setHovered] = React.useState(false);
   const [confirmed, setConfirmed] = React.useState(false);
   const pinchHandledRef = React.useRef(false);
+  const previousHoveredRef = React.useRef(false);
+  const telemetryLabel = textFromChildren(children);
 
   // Cursor-based hover detection
   React.useEffect(() => {
@@ -45,7 +62,14 @@ export function DwellButton({
       cursor.y >= r.top &&
       cursor.y <= r.bottom;
     setHovered(inside);
-  }, [cursor.x, cursor.y, cursor.active, disabled]);
+    if (inside !== previousHoveredRef.current) {
+      logResearchEvent(inside ? "hover_start" : "hover_end", {
+        target: telemetryLabel || "unknown",
+        input: "system",
+      });
+      previousHoveredRef.current = inside;
+    }
+  }, [cursor.x, cursor.y, cursor.active, disabled, telemetryLabel]);
 
   // Pinch instant-confirm shortcut
   React.useEffect(() => {
@@ -55,10 +79,21 @@ export function DwellButton({
     }
     if (hand.isPinching && !pinchHandledRef.current) {
       pinchHandledRef.current = true;
+      logResearchEvent("selection_success", {
+        target: telemetryLabel || "unknown",
+        input: "pinch",
+      });
       setConfirmed(true);
       setTimeout(() => onConfirm(), 200);
     }
-  }, [hand.isPinching, hovered, disabled, confirmed, onConfirm]);
+  }, [hand.isPinching, hovered, disabled, confirmed, onConfirm, telemetryLabel]);
+
+  React.useEffect(() => {
+    if (!hand.isPinching && confirmed) {
+      setConfirmed(false);
+      pinchHandledRef.current = false;
+    }
+  }, [hand.isPinching, confirmed]);
 
   // Dwell progression removed - user must pinch to select
   const variantClass = {
@@ -81,7 +116,14 @@ export function DwellButton({
       ref={ref}
       type="button"
       disabled={disabled}
-      onClick={() => !disabled && onConfirm()}
+      onClick={() => {
+        if (disabled) return;
+        logResearchEvent("selection_success", {
+          target: telemetryLabel || "unknown",
+          input: "click",
+        });
+        onConfirm();
+      }}
       className={cn(
         "relative inline-flex items-center justify-center text-center overflow-hidden rounded-2xl border transition-colors duration-200",
         "focus:outline-none focus-visible:ring-4 focus-visible:ring-primary/35",

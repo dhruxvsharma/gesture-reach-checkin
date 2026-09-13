@@ -2,8 +2,10 @@
 import * as React from "react";
 
 export type Language = "en" | "es" | "zh" | "ar" | "hi";
+export type CueVariant = "animated" | "static" | "none";
 
 export interface KioskState {
+  cueVariant: CueVariant | null;
   language: Language;
   screeningFlags: { fever: boolean; symptoms: boolean; exposure: boolean };
   selectedSymptoms: string[];
@@ -13,6 +15,7 @@ export interface KioskState {
 }
 
 const initialState: KioskState = {
+  cueVariant: null,
   language: "en",
   screeningFlags: { fever: false, symptoms: false, exposure: false },
   selectedSymptoms: [],
@@ -45,7 +48,7 @@ export function useKiosk() {
   React.useEffect(() => {
     const unsub = kioskStore.subscribe(() => force((n) => n + 1));
     return () => {
-      unsub;
+      unsub();
     };
   }, []);
   return state;

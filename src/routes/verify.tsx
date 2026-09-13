@@ -8,12 +8,14 @@ export const Route = createFileRoute("/verify")({
 function VerifyPage() {
   const navigate = useNavigate();
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center px-12">
-      <div className="mb-2 text-xs font-semibold uppercase tracking-[0.25em] text-primary">Step 4 of 11</div>
-      <h1 className="font-sans mb-3 text-5xl font-bold tracking-tight text-foreground">Is this you?</h1>
-      <p className="mb-10 text-lg text-muted-foreground">Confirm your appointment details</p>
+    <div className="kiosk-page">
+      <div className="kiosk-page-header">
+        <div className="kiosk-step">Step 4 of 11</div>
+        <h1 className="kiosk-title">Is this you?</h1>
+        <p className="kiosk-subtitle">Confirm your appointment details</p>
+      </div>
 
-      <div className="surface-card mb-10 w-full max-w-2xl rounded-3xl p-10">
+      <div className="surface-card kiosk-panel mt-9 mb-8 max-w-2xl">
         <div className="mb-6 flex items-center gap-5">
           <div className="flex h-20 w-20 items-center justify-center rounded-full bg-accent text-2xl font-semibold text-primary">
             SM
@@ -43,11 +45,11 @@ function VerifyPage() {
         </div>
       </div>
 
-      <div className="flex w-full max-w-2xl items-center justify-between gap-4">
+      <div className="flex w-full max-w-2xl flex-col-reverse items-stretch justify-between gap-3 sm:flex-row sm:items-center sm:gap-4">
         <DwellButton variant="ghost" onConfirm={() => navigate({ to: "/identify" })} className="px-6 py-4 text-base">
           Not me
         </DwellButton>
-        <DwellButton variant="primary" onConfirm={() => navigate({ to: "/insurance" })} className="flex-1 py-5 text-lg font-medium">
+        <DwellButton variant="primary" onConfirm={() => navigate({ to: "/insurance" })} className="flex-1 py-4 text-lg font-medium">
           Yes, that's me
         </DwellButton>
       </div>

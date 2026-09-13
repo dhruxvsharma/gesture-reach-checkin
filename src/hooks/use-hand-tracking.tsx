@@ -4,6 +4,7 @@ import {
   FilesetResolver,
   type HandLandmarkerResult,
 } from "@mediapipe/tasks-vision";
+import { logResearchEvent } from "@/lib/research-telemetry";
 
 export interface HandState {
   x: number; // 0..1 normalized in viewport
@@ -35,6 +36,7 @@ export function HandTrackingProvider({ children }: { children: React.ReactNode }
   const rafRef = React.useRef<number | null>(null);
   const smoothRef = React.useRef({ x: 0.5, y: 0.5 });
   const lastSeenRef = React.useRef(0);
+  const pinchActiveRef = React.useRef(false);
 
   const requestCamera = React.useCallback(async () => {
     setState((s) => ({ ...s, permissionState: "requesting" }));
@@ -114,6 +116,21 @@ export function HandTrackingProvider({ children }: { children: React.ReactNode }
           const dist = Math.sqrt(dx * dx + dy * dy);
           const isPinching = dist < 0.05;
 
+          if (isPinching && !pinchActiveRef.current) {
+            const target = document
+              .elementFromPoint(smoothRef.current.x * window.innerWidth, smoothRef.current.y * window.innerHeight)
+              ?.closest("button");
+            logResearchEvent("pinch_attempt", {
+              target: target?.textContent?.replace(/\s+/g, " ").trim() || undefined,
+              input: "pinch",
+              details: {
+                normalizedX: Number(smoothRef.current.x.toFixed(3)),
+                normalizedY: Number(smoothRef.current.y.toFixed(3)),
+              },
+            });
+          }
+          pinchActiveRef.current = isPinching;
+
           lastSeenRef.current = now;
           setState((s) => ({
             ...s,
@@ -123,6 +140,7 @@ export function HandTrackingProvider({ children }: { children: React.ReactNode }
             isPinching,
           }));
         } else if (now - lastSeenRef.current > 400) {
+          pinchActiveRef.current = false;
           setState((s) => (s.isDetected ? { ...s, isDetected: false, isPinching: false } : s));
         }
       }
@@ -139,6 +157,7 @@ export function HandTrackingProvider({ children }: { children: React.ReactNode }
         (v.srcObject as MediaStream).getTracks().forEach((t) => t.stop());
       }
       landmarkerRef.current?.close();
+      pinchActiveRef.current = false;
     };
   }, []);
 

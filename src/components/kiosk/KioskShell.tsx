@@ -4,8 +4,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { HandTrackingProvider, useHandTracking } from "@/hooks/use-hand-tracking";
 import { CursorProvider } from "@/hooks/use-cursor";
 import { GestureCursor } from "./GestureCursor";
+import { GestureCoach } from "./GestureCoach";
 import { CameraGate } from "./CameraGate";
-import { STEPS, kioskStore } from "@/lib/kiosk-store";
+import { STEPS, kioskStore, useKiosk } from "@/lib/kiosk-store";
+import { getRequestedCueVariant, logResearchEvent, trackScreen, useCueVariant, useHydrated } from "@/lib/research-telemetry";
 
 const IDLE_MS = 90_000;
 
@@ -19,8 +21,8 @@ function StatusBar() {
   const progressPct = (current / (total - 1)) * 100;
 
   return (
-    <div className="fixed left-0 right-0 top-0 z-40 bg-transparent">
-      <div className="flex items-center justify-between gap-6 px-10 py-4">
+    <div className="fixed left-0 right-0 top-0 z-40 border-b border-border/70 bg-background/90 backdrop-blur-md">
+      <div className="mx-auto flex w-full items-center justify-between gap-4 px-6 py-3 lg:gap-6 lg:px-10 lg:py-4">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-primary-foreground">
@@ -29,16 +31,16 @@ function StatusBar() {
           </div>
           <div>
             <div className="text-sm font-semibold tracking-tight text-foreground">SmartCare</div>
-            <div className="text-[11px] text-muted-foreground">Patient Check-in</div>
+            <div className="hidden text-[11px] text-muted-foreground sm:block">Patient Check-in</div>
           </div>
         </div>
 
         {stepIdx > 0 && (
-          <div className="flex flex-1 items-center justify-center gap-4">
-            <div className="text-sm font-medium text-foreground">
+          <div className="hidden flex-1 items-center justify-center gap-3 sm:flex lg:gap-4">
+            <div className="text-xs font-medium text-foreground lg:text-sm">
               Step {current} of {total - 1} · <span className="text-muted-foreground">{currentStep?.label}</span>
             </div>
-            <div className="h-1.5 w-48 overflow-hidden rounded-full bg-muted">
+            <div className="h-1.5 w-32 overflow-hidden rounded-full bg-muted lg:w-48">
               <div
                 className="h-full bg-primary transition-all duration-500"
                 style={{ width: `${progressPct}%` }}
@@ -47,7 +49,7 @@ function StatusBar() {
           </div>
         )}
 
-        <div className="flex items-center gap-2 rounded-full border border-border bg-white px-3 py-1.5">
+        <div className="flex shrink-0 items-center gap-2 rounded-full border border-border bg-white px-3 py-1.5">
           <div
             className="h-2 w-2 rounded-full transition-colors"
             style={{
@@ -68,16 +70,32 @@ function StatusBar() {
 }
 
 function HintBar() {
+  const location = useLocation();
+  const kiosk = useKiosk();
   const hand = useHandTracking();
+  const hydrated = useHydrated();
+  const cueVariant = useCueVariant(kiosk.cueVariant);
+  const isWelcome = location.pathname === "/";
+  const isSanitizing = location.pathname === "/sanitize";
+  const isSetup = isWelcome && !kiosk.cueVariant && !getRequestedCueVariant();
+  if (!hydrated || cueVariant === "none" || isSetup) return null;
   return (
-    <div className="pointer-events-none fixed bottom-0 left-0 right-0 z-40 flex items-center justify-center px-10 pb-6">
-      <div className="rounded-2xl border border-border bg-white/90 px-6 py-3 text-center shadow-[0_1px_2px_rgba(15,23,42,0.04)] backdrop-blur">
+    <div className="pointer-events-none fixed bottom-0 left-0 right-0 z-40 flex items-center justify-center px-4 pb-4 sm:px-10 sm:pb-6">
+      <div className="max-w-[min(34rem,calc(100vw-2rem))] rounded-xl border border-border bg-white/90 px-4 py-2.5 text-center shadow-[0_1px_2px_rgba(15,23,42,0.04)] backdrop-blur sm:px-5">
         <div className="text-sm font-medium text-foreground">
-          {hand.isDetected ? "Point with your index finger" : "Show your hand to the camera"}
+          {isWelcome
+            ? hand.isDetected
+              ? "Hold steady to begin"
+              : "Show your hand to the camera"
+            : isSanitizing
+              ? "Sanitizing in progress"
+              : hand.isDetected
+                ? "Hand detected · follow the guide"
+                : "Show your hand to the camera"}
         </div>
-        <div className="text-xs text-muted-foreground">
-          Hold over a button for 1.5 seconds to choose · Pinch to confirm instantly
-        </div>
+        {!isSanitizing && !isWelcome && (
+          <div className="text-xs text-muted-foreground">Follow the gesture guide at lower left</div>
+        )}
       </div>
     </div>
   );
@@ -119,7 +137,7 @@ function CameraThumb() {
 
   if (!hand.videoEl) return null;
   return (
-    <div className="pointer-events-none fixed bottom-28 right-6 z-40">
+    <div className="pointer-events-none fixed bottom-6 right-6 z-40">
       <div className="overflow-hidden rounded-xl border border-border bg-white p-1.5 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_rgba(15,23,42,0.06)]">
         <canvas ref={canvasRef} width={140} height={100} className="block rounded-md" />
         <div className="px-1 pt-1 pb-0.5 text-center text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
@@ -155,6 +173,7 @@ function IdleReset() {
   React.useEffect(() => {
     const interval = setInterval(() => {
       if (Date.now() - lastActivityRef.current > IDLE_MS && location.pathname !== "/") {
+        logResearchEvent("idle_reset", { input: "system" });
         kioskStore.reset();
         navigate({ to: "/" });
       }
@@ -167,16 +186,22 @@ function IdleReset() {
 
 function ShellInner() {
   const location = useLocation();
+
+  React.useEffect(() => {
+    trackScreen(location.pathname);
+  }, [location.pathname]);
+
   return (
     <>
       <CameraGate />
       <StatusBar />
       <CameraThumb />
       <HintBar />
+      <GestureCoach />
       <IdleReset />
       <GestureCursor />
 
-      <main className="h-screen w-screen overflow-hidden bg-background pt-20 pb-28">
+      <main className="h-screen w-screen overflow-y-auto overflow-x-hidden bg-background pt-20 pb-40">
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}

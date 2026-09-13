@@ -1,9 +1,15 @@
 import { useHandTracking } from "@/hooks/use-hand-tracking";
 import { motion } from "framer-motion";
 import * as React from "react";
+import { logResearchEvent } from "@/lib/research-telemetry";
 
 export function CameraGate() {
   const { permissionState, requestCamera } = useHandTracking();
+
+  React.useEffect(() => {
+    if (permissionState === "granted") logResearchEvent("camera_permission_granted", { input: "system" });
+    if (permissionState === "denied") logResearchEvent("camera_permission_denied", { input: "system" });
+  }, [permissionState]);
 
   React.useEffect(() => {
     if (permissionState === "granted") {
@@ -33,7 +39,10 @@ export function CameraGate() {
           We use your camera to track hand gestures. No video is stored or sent anywhere — everything runs on this device.
         </p>
         <button
-          onClick={requestCamera}
+          onClick={() => {
+            logResearchEvent("camera_permission_requested", { input: "system" });
+            void requestCamera();
+          }}
           disabled={permissionState === "requesting"}
           className="cursor-pointer rounded-xl bg-primary px-8 py-4 text-lg font-medium text-primary-foreground shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_rgba(15,23,42,0.06)] transition-colors hover:bg-primary/90 disabled:opacity-60"
         >

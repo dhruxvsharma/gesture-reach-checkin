@@ -8,12 +8,14 @@ export const Route = createFileRoute("/insurance")({
 function InsurancePage() {
   const navigate = useNavigate();
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center px-12">
-      <div className="mb-2 text-xs font-semibold uppercase tracking-[0.25em] text-primary">Step 5 of 11</div>
-      <h1 className="font-sans mb-3 text-5xl font-bold tracking-tight text-foreground">Insurance on file</h1>
-      <p className="mb-10 text-lg text-muted-foreground">Is this still correct?</p>
+    <div className="kiosk-page">
+      <div className="kiosk-page-header">
+        <div className="kiosk-step">Step 5 of 11</div>
+        <h1 className="kiosk-title">Insurance on file</h1>
+        <p className="kiosk-subtitle">Is this still correct?</p>
+      </div>
 
-      <div className="surface-card mb-10 w-full max-w-2xl rounded-3xl p-10">
+      <div className="surface-card kiosk-panel mt-9 mb-8 max-w-2xl">
         <div className="mb-6 flex items-center justify-between">
           <div>
             <div className="mb-1 text-xs uppercase tracking-widest text-muted-foreground">Provider</div>
@@ -43,11 +45,11 @@ function InsurancePage() {
         </div>
       </div>
 
-      <div className="flex w-full max-w-2xl items-center justify-between gap-4">
+      <div className="flex w-full max-w-2xl flex-col-reverse items-stretch justify-between gap-3 sm:flex-row sm:items-center sm:gap-4">
         <DwellButton variant="ghost" onConfirm={() => navigate({ to: "/screening" })} className="px-6 py-4 text-base">
           Update insurance
         </DwellButton>
-        <DwellButton variant="primary" onConfirm={() => navigate({ to: "/screening" })} className="flex-1 py-5 text-lg font-medium">
+        <DwellButton variant="primary" onConfirm={() => navigate({ to: "/screening" })} className="flex-1 py-4 text-lg font-medium">
           Confirm
         </DwellButton>
       </div>
