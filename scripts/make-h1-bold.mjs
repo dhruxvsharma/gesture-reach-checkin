@@ -1,9 +1,8 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const routesDir = path.join(__dirname, "src/routes");
+const routesDir = path.resolve(__dirname, "../src/routes");
 
 function traverse(dir) {
   const files = fs.readdirSync(dir);
@@ -14,10 +13,12 @@ function traverse(dir) {
       traverse(fullPath);
     } else if (file.endsWith(".tsx")) {
       let content = fs.readFileSync(fullPath, "utf-8");
-      if (content.includes("font-serif")) {
-        // Replace "font-serif " and "font-serif" with "font-sans " and "font-sans" respectively.
-        content = content.replace(/font-serif /g, "font-sans ");
-        content = content.replace(/font-serif/g, "font-sans");
+      
+      // Specifically replace font-light with font-bold inside <h1 className="..."
+      const h1Regex = /(<h1[^>]*?className="[^"]*?)font-light([^"]*?"[^>]*>)/g;
+      
+      if (h1Regex.test(content)) {
+        content = content.replace(h1Regex, "$1font-bold$2");
         fs.writeFileSync(fullPath, content);
         console.log(`Updated ${file}`);
       }
